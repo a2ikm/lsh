@@ -7,6 +7,7 @@
 /*
   Function Declarations for builtin shell commands:
  */
+int lsh_pwd(char **args);
 int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
@@ -15,12 +16,14 @@ int lsh_exit(char **args);
   List of builtin commands, followed by their corresponding functions.
  */
 char *builtin_str[] = {
+  "pwd",
   "cd",
   "help",
   "exit"
 };
 
 int (*builtin_func[]) (char **) = {
+  &lsh_pwd,
   &lsh_cd,
   &lsh_help,
   &lsh_exit
@@ -33,6 +36,18 @@ int lsh_num_builtins() {
 /*
   Builtin function implementations.
 */
+int lsh_pwd(char **args)
+{
+  char *pwd = getcwd(NULL, 0);
+  if (pwd == NULL) {
+    perror("lsh");
+  } else {
+    printf("%s\n", pwd);
+    free(pwd);
+  }
+  return 1;
+}
+
 int lsh_cd(char **args)
 {
   if (args[1] == NULL) {
