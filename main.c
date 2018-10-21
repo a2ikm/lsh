@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "builtin.h"
+#include "lsh.h"
 
 int lsh_launch(char **args)
 {
