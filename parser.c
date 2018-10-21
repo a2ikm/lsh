@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "lsh.h"
 
 #define LSH_TOK_BUFSIZE 64
