@@ -7,8 +7,11 @@ builin.o: builtin.c
 main.o: main.c
 	clang -c main.c
 
-lsh: builin.o main.o
-	clang -o lsh main.o builtin.o
+parser.o: parser.c
+	clang -c parser.c
+
+lsh: builin.o main.o parser.o
+	clang -o lsh builtin.o main.o parser.o
 
 .PHONY: clean
 clean:
