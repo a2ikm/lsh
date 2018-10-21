@@ -10,8 +10,11 @@ main.o: main.c
 parser.o: parser.c
 	clang -c parser.c
 
-lsh: builin.o main.o parser.o
-	clang -o lsh builtin.o main.o parser.o
+util.o: util.c
+	clang -c util.c
+
+lsh: builin.o main.o parser.o util.o
+	clang -o lsh builtin.o main.o parser.o util.o
 
 .PHONY: clean
 clean:

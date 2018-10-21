@@ -1,6 +1,6 @@
 #include "lsh.h"
 
-int lsh_launch(char **args)
+int lsh_launch(Vector *args)
 {
   pid_t pid, wpid;
   int status;
@@ -8,7 +8,7 @@ int lsh_launch(char **args)
   pid = fork();
   if (pid == 0) {
     // Child process
-    if (execvp(args[0], args) == -1) {
+    if (execvp((char *)args->data[0], (char **)args->data) == -1) {
       perror("lsh");
     }
     exit(EXIT_FAILURE);
@@ -25,16 +25,16 @@ int lsh_launch(char **args)
   return 1;
 }
 
-int lsh_execute(char **args)
+int lsh_execute(Vector *args)
 {
   lsh_builtin_func f;
 
-  if (args[0] == NULL) {
+  if (args->data[0] == NULL) {
     // An empty command was entered.
     return 1;
   }
 
-  f = lsh_find_builtin_func(args[0]);
+  f = lsh_find_builtin_func(args->data[0]);
   if (f != NULL) {
     return f(args);
   }
@@ -83,7 +83,7 @@ char *lsh_read_line(void)
 void lsh_loop(void)
 {
   char *line;
-  char **args;
+  Vector *args;
   int status;
 
   do {
@@ -93,7 +93,7 @@ void lsh_loop(void)
     status = lsh_execute(args);
 
     free(line);
-    free(args);
+    vec_free(args);
   } while (status);
 }
 

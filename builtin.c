@@ -3,10 +3,10 @@
 /*
   Function Declarations for builtin shell commands:
  */
-int lsh_pwd(char **args);
-int lsh_cd(char **args);
-int lsh_help(char **args);
-int lsh_exit(char **args);
+int lsh_pwd(Vector *args);
+int lsh_cd(Vector *args);
+int lsh_help(Vector *args);
+int lsh_exit(Vector *args);
 
 /*
   List of builtin commands, followed by their corresponding functions.
@@ -43,7 +43,7 @@ lsh_builtin_func lsh_find_builtin_func(char *name)
 /*
   Builtin function implementations.
 */
-int lsh_pwd(char **args)
+int lsh_pwd(Vector *args)
 {
   char *pwd = getcwd(NULL, 0);
   if (pwd == NULL) {
@@ -55,19 +55,19 @@ int lsh_pwd(char **args)
   return 1;
 }
 
-int lsh_cd(char **args)
+int lsh_cd(Vector *args)
 {
-  if (args[1] == NULL) {
+  if (args->data[1] == NULL) {
     fprintf(stderr, "lsh: expected argument to \"cd\"\n");
   } else {
-    if (chdir(args[1]) != 0) {
+    if (chdir(args->data[1]) != 0) {
       perror("lsh");
     }
   }
   return 1;
 }
 
-int lsh_help(char **args)
+int lsh_help(Vector *args)
 {
   int i;
   printf("Stephen Brennan's LSH\n");
@@ -82,7 +82,7 @@ int lsh_help(char **args)
   return 1;
 }
 
-int lsh_exit(char **args)
+int lsh_exit(Vector *args)
 {
   return 0;
 }
