@@ -35,27 +35,26 @@ void program_free(Program *p)
 Program *lsh_parse(char *line)
 {
   char *token;
+  char *part;
   Command *c = NULL;
   Program *p = program_new();
 
-  token = strtok(line, LSH_TOK_DELIM);
-  while (token != NULL) {
-    if (strcmp(token, ";") == 0) {
-      if (c != NULL) {
-        vec_push(c->args, NULL);
+  while ((part = strsep(&line, ";")) != NULL) {
+    while ((token = strsep(&part, LSH_TOK_DELIM)) != NULL) {
+      if (strcmp(token, "") == 0) {
+        continue;
       }
-      c = NULL;
-    } else {
       if (c == NULL) {
         c = command_new();
         vec_push(p->commands, c);
       }
       vec_push(c->args, token);
     }
-    token = strtok(NULL, LSH_TOK_DELIM);
+    if (c != NULL) {
+      vec_push(c->args, NULL);
+      c = NULL;
+    }
   }
-  if (c != NULL) {
-    vec_push(c->args, NULL);
-  }
+
   return p;
 }
