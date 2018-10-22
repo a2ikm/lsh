@@ -27,6 +27,16 @@ lsh_builtin_func lsh_find_builtin_func(char *name);
 
 /// parser.c
 
-Vector *lsh_split_line(char *line);
+typedef struct {
+  Vector *args;
+} Command;
+
+typedef struct {
+  Vector *commands;
+} Program;
+
+void program_free(Program *p);
+
+Program *lsh_parse(char *line);
 
 #endif

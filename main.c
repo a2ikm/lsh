@@ -25,21 +25,35 @@ int lsh_launch(Vector *args)
   return 1;
 }
 
-int lsh_execute(Vector *args)
+int lsh_execute(Command *c)
 {
   lsh_builtin_func f;
 
-  if (args->data[0] == NULL) {
+  if (c->args->data[0] == NULL) {
     // An empty command was entered.
     return 1;
   }
 
-  f = lsh_find_builtin_func(args->data[0]);
+  f = lsh_find_builtin_func(c->args->data[0]);
   if (f != NULL) {
-    return f(args);
+    return f(c->args);
   }
 
-  return lsh_launch(args);
+  return lsh_launch(c->args);
+}
+
+int lsh_run(Program *p)
+{
+  int ret;
+  Command *c;
+  for (int i = 0; i < p->commands->len; i++) {
+    c = p->commands->data[i];
+    ret = lsh_execute(c);
+    if (!ret) {
+      return ret;
+    }
+  }
+  return ret;
 }
 
 #define LSH_RL_BUFSIZE 1024
@@ -83,17 +97,17 @@ char *lsh_read_line(void)
 void lsh_loop(void)
 {
   char *line;
-  Vector *args;
+  Program *p;
   int status;
 
   do {
     printf("> ");
     line = lsh_read_line();
-    args = lsh_split_line(line);
-    status = lsh_execute(args);
+    p = lsh_parse(line);
+    status = lsh_run(p);
 
     free(line);
-    vec_free(args);
+    program_free(p);
   } while (status);
 }
 
